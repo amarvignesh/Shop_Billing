@@ -11,7 +11,7 @@
 <form action="/Shop/Controller" method="post">
 <div>
 <input type="hidden" name="action" value="dologin">
-Username:<input type="text" name="username"><br>
+Username:<input type="text" name="username" value=<%= request.getAttribute("username") %>><br>
 Password:<input type="text" name="password">
 </div>
 <div>

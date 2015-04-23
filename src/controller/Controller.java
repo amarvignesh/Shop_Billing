@@ -2,8 +2,6 @@ package controller;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
-
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -14,7 +12,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
 import service.Service;
@@ -27,6 +24,7 @@ import bean.User;
 public class Controller extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	DataSource ds = null;
+	Connection conn = null;
 
     /**
      * @see HttpServlet#HttpServlet()
@@ -55,52 +53,58 @@ public class Controller extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		String action = request.getParameter("action");
+		
+		if (action==null){
+			request.getRequestDispatcher("/index.jsp").forward(request, response);
+			
+		}
+		else if(action.equals("login")){
+			request.setAttribute("username", "");
+
+			request.getRequestDispatcher("/login.jsp").forward(request, response);
+		}
+		
 	}
 
 	/**
+	 * @throws IOException 
+	 * @throws ServletException 
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException  {
 		
 		
-		Connection conn = null;
+		String action = request.getParameter("action");
 		
-		
-		try {
-			conn = ds.getConnection();
-		} catch (SQLException e) {
-			throw new ServletException();
+		if (action==null){
+			request.getRequestDispatcher("/index.jsp").forward(request, response);
 		}
-		
-		String username = request.getParameter("username");
-		String password = request.getParameter("password");
-		
-		User user = new User();
-		user.setUsername(username);
-		user.setPssword(password);
-		
-		Service service = new Service();
-		boolean status;
-		
+		else if(action.equals("dologin")){
 			
-			try {
-				status = service.validateLogin(user, conn);
-				if(status){
-					request.getRequestDispatcher("billingconsole.jsp").forward(request, response);
-					HttpSession session = request.getSession();
-					session.setAttribute("user", user);
+			String username = request.getParameter("username");
+			String password = request.getParameter("password");
+			
+			User user = new User();
+			user.setUsername(username);
+			user.setPssword(password);
+			
+			request.setAttribute("username", username);
 					
-				}
-				else{
-					System.out.println("not found");
-				}
-			} catch (NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		 catch (SQLException e) {
+					
+			Service service = new Service();
+										 
+					
+						if(service.validateLogin(user, conn, ds)){
+							request.getRequestDispatcher("/billingconsole.jsp").forward(request, response);
 							
+						}
+						else{
+							request.getRequestDispatcher("/login.jsp").forward(request, response);
+						}
+					
+				
 			}
-	}
+		}
+				
 }

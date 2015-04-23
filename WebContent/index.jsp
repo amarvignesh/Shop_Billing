@@ -4,9 +4,10 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Billing Console</title>
+<title>Insert title here</title>
 </head>
 <body>
-<h2>Welcome, <%= request.getParameter("username") %></h2>
+<h2 align="center">Welcome to Billing Console</h2>
+<p align="center"><a href="/Shop/Controller?action=login">Click here to login</a></p>
 </body>
 </html>
