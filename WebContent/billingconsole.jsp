@@ -7,6 +7,27 @@
 <title>Billing Console</title>
 </head>
 <body>
-<h2>Welcome, <%= request.getParameter("username") %></h2>
+<%
+String user = null;
+if(session.getAttribute("user")==null){
+	response.sendRedirect("login.jsp");
+}
+else
+	user = (String) session.getAttribute("user");
+	String userName = null;
+	String sessionId = null;
+	
+	Cookie[] cookies = request.getCookies();
+	if(cookies!=null){
+		for(Cookie cookie : cookies){
+			if(cookie.getName().equals("user")) userName = cookie.getValue();
+			if(cookie.getName().equals("JSESSIONID")) sessionId = cookie.getValue();
+		}
+	}
+		
+
+%>
+<h2>Welcome, <%=user%></h2>
+<h3>Session ID is, <%= sessionId %></h3>
 </body>
 </html>

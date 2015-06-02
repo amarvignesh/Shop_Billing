@@ -7,7 +7,7 @@
 <title>User Login</title>
 </head>
 <body>
-<jsp:useBean id="user" class="bean.User" scope="session"></jsp:useBean>
+<jsp:useBean id="user" class="bean.User"></jsp:useBean>
 <form action="/Shop/Controller" method="post">
 <div>
 <input type="hidden" name="action" value="dologin">
